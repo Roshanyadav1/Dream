@@ -1,12 +1,10 @@
 import React from 'react'
 import { View, Text } from 'react-native'
 
-const BottomNavi = () => {
+export default function MyGames() {
     return (
         <View>
-            <Text>hello</Text>
+            <Text>My collection</Text>
         </View>
     )
 }
-
-export default BottomNavi

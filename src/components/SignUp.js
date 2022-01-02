@@ -1,4 +1,4 @@
-import { Icon, Avatar, Button, Spinner } from '@ui-kitten/components'
+import { Icon, Avatar, Button } from '@ui-kitten/components'
 import { TouchableWithoutFeedback, ImageBackground, ScrollView, Text, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
@@ -8,11 +8,6 @@ const AlertIcon = (props) => (
     <Icon {...props} name='alert-circle-outline' />
 );
 
-const LoadingIndicator = (props) => (
-    <View style={[props.style, styles.indicator]}>
-        <Spinner size='small' />
-    </View>
-);
 
 const isValidateEmail = (email) => {
     return String(email)
@@ -22,8 +17,7 @@ const isValidateEmail = (email) => {
         );
 };
 
-const Login = ({ navigation }) => {
-
+const SignUp = ({ navigation }) => {
     const updateError = (error, stateUpdater) => {
         stateUpdater(error)
         setTimeout(() => {
@@ -32,14 +26,18 @@ const Login = ({ navigation }) => {
     }
 
     const [userInfo, setUserInfo] = useState({
+        userName: '',
         email: '',
         password: '',
+        confirmPassword: '',
     })
 
-    const { email, password } = userInfo
+    const { userName, email, password, confirmPassword } = userInfo
 
+    const [userNameError, setUserNameError] = useState('')
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [confirmPasswordError, setConfirmPasswordError] = useState('')
     const [secureTextEntry, setSecureTextEntry] = React.useState(true);
 
 
@@ -54,6 +52,15 @@ const Login = ({ navigation }) => {
     );
 
     const renderCaption = (value) => {
+        if (value === "userName") {
+            return (
+                <View style={styles.captionContainer}>
+                    <Text style={styles.captionText}>
+                        {AlertIcon(styles.captionIcon)}
+                        Enter your username</Text>
+                </View>
+            )
+        }
         if (value === "email") {
             return (
                 <View style={styles.captionContainer}>
@@ -72,6 +79,15 @@ const Login = ({ navigation }) => {
                 </View>
             )
         }
+        if (value === "confirmPassword") {
+            return (
+                <View style={styles.captionContainer}>
+                    <Text style={styles.captionText}>
+                        {AlertIcon(styles.captionIcon)}
+                        Invalid cridential</Text>
+                </View>
+            )
+        }
     }
 
     const handleChangeText = (value, fieldName) => {
@@ -79,12 +95,17 @@ const Login = ({ navigation }) => {
     }
 
     const handleSubmit = () => {
-
+        if (userName.length < 3) {
+            return updateError('password', setUserNameError)
+        }
         if (!isValidateEmail(email)) {
             return updateError('email', setEmailError)
         }
-        if (password.trim() && password.length <= 5) {
+        if (password.trim() && password.length < 5) {
             return updateError('password', setPasswordError)
+        }
+        if (password !== confirmPassword) {
+            return updateError('password', setConfirmPasswordError)
         }
         // return true
         navigation.navigate('Home')
@@ -102,7 +123,17 @@ const Login = ({ navigation }) => {
             <View
                 style={styles.inputContainer}
             >
-                <Text style={styles.heading}>Log in</Text>
+                <Text style={styles.heading}>Sign Up</Text>
+                <CommonInput
+                    errors={userNameError}
+                    style={styles.input}
+                    label='Username'
+                    placeholder='Username'
+                    placeholderTextColor={'white'}
+                    caption={userNameError && renderCaption("userName")}
+                    value={userName}
+                    onChangeText={(value) => handleChangeText(value, "userName")}
+                />
                 <CommonInput
                     errors={emailError}
                     style={styles.input}
@@ -122,30 +153,37 @@ const Login = ({ navigation }) => {
                     placeholder='Password'
                     secureTextEntry={secureTextEntry}
                     caption={passwordError && renderCaption("password")}
-                    accessoryRight={renderIcon}
+                    // accessoryRight={renderIcon}
                     onChangeText={(value) => handleChangeText(value, "password")}
                 />
-
-                <Button style={styles.button}
-                    accessoryLeft={LoadingIndicator}
-                    onPress={handleSubmit} appearance='outline' status='primary'>
-                    Login
+                <CommonInput
+                    errors={confirmPasswordError}
+                    style={styles.input}
+                    value={confirmPassword}
+                    label='confirmPassword'
+                    placeholderTextColor={'white'}
+                    placeholder='confirmPassword'
+                    secureTextEntry={secureTextEntry}
+                    caption={confirmPasswordError && renderCaption("confirmPassword")}
+                    accessoryRight={renderIcon}
+                    onChangeText={(value) => handleChangeText(value, "confirmPassword")}
+                />
+                <Button style={styles.button} onPress={handleSubmit} appearance='filled' status='primary'>
+                    Sign up
                 </Button>
             </View>
             <View style={styles.containerBtn}>
-                <Text>Create new account ? </Text>
+                <Text>Already have an account  ? </Text>
                 <TouchableOpacity>
                     <Text style={styles.directed}
-                        onPress={() => { navigation.navigate('SignUp') }}
-                    >Sign up</Text>
+                        onPress={() => { navigation.navigate('Login') }}
+                    >Log in</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>
     )
 }
-
-
-export default Login
+export default SignUp
 
 const styles = StyleSheet.create({
     heading: {

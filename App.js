@@ -1,11 +1,14 @@
 import React from 'react';
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider } from '@ui-kitten/components';
-import Login from './src/components/Login';
-
+import { ApplicationProvider, IconRegistry, Layout, Text } from '@ui-kitten/components';
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import StackNavigation from './src/navigation/StackNavigation';
 
 export default () => (
-  <ApplicationProvider {...eva} theme={eva.light}>
-    <Login />
-  </ApplicationProvider>
+  <>
+    <IconRegistry icons={EvaIconsPack} />
+    <ApplicationProvider {...eva} theme={eva.light}>
+      <StackNavigation />
+    </ApplicationProvider>
+  </>
 );

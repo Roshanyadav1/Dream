@@ -2,6 +2,7 @@ import { Input } from '@ui-kitten/components'
 import React from 'react'
 
 export default function CommonInput({
+    errors,
     style,
     label,
     placeholderTextColor,
@@ -10,16 +11,23 @@ export default function CommonInput({
     onChangeText,
     secureTextEntry,
     accessoryRight,
-}
-) {
+    caption,
+}) {
+    const getBorderBottomColor = () => {
+        if (errors) {
+            return 'red'
+        }
+    }
+
     return (
         <Input
-            style={[{ borderBottomColor: 'blue', ...style }]}
+            style={[{ borderBottomColor: (getBorderBottomColor()), ...style }]}
             value={value}
             label={label}
             placeholder={placeholder}
             secureTextEntry={secureTextEntry}
             accessoryRight={accessoryRight}
+            caption={caption}
             placeholderTextColor={placeholderTextColor}
             onChangeText={onChangeText}
         />
