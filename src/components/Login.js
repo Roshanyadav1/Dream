@@ -1,8 +1,9 @@
-import { Icon, Avatar, Button, Spinner } from '@ui-kitten/components'
-import { TouchableWithoutFeedback, ImageBackground, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { Text, Icon, Avatar, Button, Spinner } from '@ui-kitten/components'
+import { TouchableWithoutFeedback, ImageBackground, ScrollView, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import CommonInput from '../assests/common/CommonInput';
+import { auth } from '../../firebase';
 
 const AlertIcon = (props) => (
     <Icon {...props} name='alert-circle-outline' />
@@ -38,8 +39,11 @@ const Login = ({ navigation }) => {
 
     const { email, password } = userInfo
 
+
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
+    const [loadingBtn, setLoadingBtn] = useState(false)
     const [secureTextEntry, setSecureTextEntry] = React.useState(true);
 
 
@@ -50,6 +54,12 @@ const Login = ({ navigation }) => {
     const renderIcon = (props) => (
         <TouchableWithoutFeedback onPress={toggleSecureEntry}>
             <Icon{...props} name={secureTextEntry ? 'eye-off' : 'eye'} />
+        </TouchableWithoutFeedback>
+    );
+
+    const crossIcon = (props) => (
+        <TouchableWithoutFeedback onPress={() => setErrorMsg('')}>
+            <Icon{...props} name='close-square-outline' />
         </TouchableWithoutFeedback>
     );
 
@@ -64,11 +74,20 @@ const Login = ({ navigation }) => {
             )
         }
         if (value === "password") {
+            if (passwordError) {
+                return (
+                    <View style={styles.captionContainer}>
+                        <Text style={styles.captionText}>
+                            {AlertIcon(styles.captionIcon)}
+                            Invalid password !</Text>
+                    </View>
+                )
+            }
             return (
                 <View style={styles.captionContainer}>
                     <Text style={styles.captionText}>
                         {AlertIcon(styles.captionIcon)}
-                        Should contain at least 5 symbols</Text>
+                        Should contain at least 6 symbols</Text>
                 </View>
             )
         }
@@ -78,16 +97,42 @@ const Login = ({ navigation }) => {
         setUserInfo({ ...userInfo, [fieldName]: value })
     }
 
-    const handleSubmit = () => {
-
+    const handleSubmit = async () => {
         if (!isValidateEmail(email)) {
             return updateError('email', setEmailError)
         }
-        if (password.trim() && password.length <= 5) {
+        if (password.length < 6) {
             return updateError('password', setPasswordError)
         }
-        // return true
-        navigation.navigate('Home')
+        setLoadingBtn(true)
+        auth
+            .signInWithEmailAndPassword(email, password)
+            .then((response) => {
+                const data = response.user
+                if (data.uid) {
+                    navigation.navigate("Home")
+                }
+                setLoadingBtn(false)
+            })
+            .catch(error => {
+                console.log(error.code);
+                setLoadingBtn(false)
+                switch (error.code) {
+                    case 'auth/wrong-password':
+                        setErrorMsg("invalid password !")
+                        updateError('invalid password', setPasswordError)
+                        break;
+                    case 'auth/too-many-requests':
+                        setErrorMsg("Account has been locked try again later")
+                        updateError('invalid password', setPasswordError)
+                        break;
+                    case 'auth/user-not-found':
+                        setErrorMsg("User not found")
+                        updateError('invalid password', setPasswordError)
+                        updateError('invalid email', setEmailError)
+                        break;
+                }
+            })
     }
 
 
@@ -103,6 +148,22 @@ const Login = ({ navigation }) => {
                 style={styles.inputContainer}
             >
                 <Text style={styles.heading}>Log in</Text>
+
+                {/* Message box  */}
+                <Text style={{ flex: 1, marginTop: 5 }}>
+                    {
+                        errorMsg &&
+                        < CommonInput
+                            disabled={true}
+                            style={styles.errors}
+                            placeholderTextColor={'red'}
+                            placeholder={errorMsg ? errorMsg : ''}
+                            accessoryRight={crossIcon}
+                        />
+                    }
+                </Text>
+                {/* Message box end here  */}
+
                 <CommonInput
                     errors={emailError}
                     style={styles.input}
@@ -127,8 +188,10 @@ const Login = ({ navigation }) => {
                 />
 
                 <Button style={styles.button}
-                    accessoryLeft={LoadingIndicator}
-                    onPress={handleSubmit} appearance='outline' status='primary'>
+                    onPress={handleSubmit} appearance='outline' status='primary'
+                    accessoryRight={loadingBtn ? LoadingIndicator : ""}
+                    disabled={loadingBtn ? "disabled" : ""}
+                >
                     Login
                 </Button>
             </View>
@@ -140,7 +203,7 @@ const Login = ({ navigation }) => {
                     >Sign up</Text>
                 </TouchableOpacity>
             </View>
-        </ScrollView>
+        </ScrollView >
     )
 }
 
@@ -204,5 +267,10 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'flex-start',
         marginHorizontal: 30,
+    },
+    errors: {
+        marginTop: 5,
+        borderColor: 'red',
+        borderWidth: 1
     }
 });

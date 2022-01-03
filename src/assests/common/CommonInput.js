@@ -12,6 +12,7 @@ export default function CommonInput({
     secureTextEntry,
     accessoryRight,
     caption,
+    disabled,
 }) {
     const getBorderBottomColor = () => {
         if (errors) {
@@ -24,6 +25,7 @@ export default function CommonInput({
             style={[{ borderBottomColor: (getBorderBottomColor()), ...style }]}
             value={value}
             label={label}
+            disabled={disabled}
             placeholder={placeholder}
             secureTextEntry={secureTextEntry}
             accessoryRight={accessoryRight}

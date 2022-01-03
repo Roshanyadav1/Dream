@@ -1,13 +1,19 @@
-import { Icon, Avatar, Button } from '@ui-kitten/components'
+import { Icon, Avatar, Button, Spinner } from '@ui-kitten/components'
 import { TouchableWithoutFeedback, ImageBackground, ScrollView, Text, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import CommonInput from '../assests/common/CommonInput';
+import { auth } from '../../firebase';
 
 const AlertIcon = (props) => (
     <Icon {...props} name='alert-circle-outline' />
 );
 
+const LoadingIndicator = (props) => (
+    <View style={[props.style, styles.indicator]}>
+        <Spinner size='small' />
+    </View>
+);
 
 const isValidateEmail = (email) => {
     return String(email)
@@ -38,6 +44,8 @@ const SignUp = ({ navigation }) => {
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('')
+    const [errorMsg, setErrorMsg] = useState('');
+    const [loadingBtn, setLoadingBtn] = useState(false)
     const [secureTextEntry, setSecureTextEntry] = React.useState(true);
 
 
@@ -48,6 +56,12 @@ const SignUp = ({ navigation }) => {
     const renderIcon = (props) => (
         <TouchableWithoutFeedback onPress={toggleSecureEntry}>
             <Icon{...props} name={secureTextEntry ? 'eye-off' : 'eye'} />
+        </TouchableWithoutFeedback>
+    );
+
+    const crossIcon = (props) => (
+        <TouchableWithoutFeedback onPress={() => setErrorMsg('')}>
+            <Icon{...props} name='close-square-outline' />
         </TouchableWithoutFeedback>
     );
 
@@ -75,7 +89,7 @@ const SignUp = ({ navigation }) => {
                 <View style={styles.captionContainer}>
                     <Text style={styles.captionText}>
                         {AlertIcon(styles.captionIcon)}
-                        Should contain at least 5 symbols</Text>
+                        Should contain at least 6 symbols</Text>
                 </View>
             )
         }
@@ -94,21 +108,38 @@ const SignUp = ({ navigation }) => {
         setUserInfo({ ...userInfo, [fieldName]: value })
     }
 
-    const handleSubmit = () => {
+
+    const handleSubmit = async () => {
         if (userName.length < 3) {
             return updateError('password', setUserNameError)
         }
         if (!isValidateEmail(email)) {
             return updateError('email', setEmailError)
         }
-        if (password.trim() && password.length < 5) {
+        if (!password.trim() && password.length < 6) {
             return updateError('password', setPasswordError)
         }
         if (password !== confirmPassword) {
             return updateError('password', setConfirmPasswordError)
         }
-        // return true
-        navigation.navigate('Home')
+        setLoadingBtn(true)
+        auth
+            .createUserWithEmailAndPassword(email, password)
+            .then((response) => {
+                const data = response.user
+                if (data.uid) {
+                    navigation.navigate("Home")
+                }
+                setLoadingBtn(false)
+            })
+            .catch(error => {
+                setLoadingBtn(false)
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        setErrorMsg("Email already in use !")
+                        break;
+                }
+            })
     }
 
 
@@ -124,6 +155,22 @@ const SignUp = ({ navigation }) => {
                 style={styles.inputContainer}
             >
                 <Text style={styles.heading}>Sign Up</Text>
+
+                {/* Message box  */}
+                <Text>
+                    {
+                        errorMsg &&
+                        < CommonInput
+                            disabled={true}
+                            style={styles.errors}
+                            placeholderTextColor={'red'}
+                            placeholder={errorMsg ? errorMsg : ''}
+                            accessoryRight={crossIcon}
+                        />
+                    }
+                </Text>
+                {/* Message box end here  */}
+
                 <CommonInput
                     errors={userNameError}
                     style={styles.input}
@@ -168,8 +215,12 @@ const SignUp = ({ navigation }) => {
                     accessoryRight={renderIcon}
                     onChangeText={(value) => handleChangeText(value, "confirmPassword")}
                 />
-                <Button style={styles.button} onPress={handleSubmit} appearance='filled' status='primary'>
-                    Sign up
+                <Button style={styles.button}
+                    onPress={handleSubmit} appearance='outline' status='primary'
+                    accessoryRight={loadingBtn ? LoadingIndicator : ""}
+                    disabled={loadingBtn ? "disabled" : ""}
+                >
+                    Sign in
                 </Button>
             </View>
             <View style={styles.containerBtn}>

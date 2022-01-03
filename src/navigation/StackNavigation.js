@@ -19,9 +19,6 @@ function StackNavigation() {
                 <Stack.Screen name="SignUp" component={SignUp}
                     options={{ headerShown: false }}
                 />
-                <Stack.Screen name="Collection" component={MyCollection}
-                    options={{ headerShown: false }}
-                />
                 <Stack.Screen name="Home" component={TopNavigation}
                     options={{ headerShown: false }}
                 />
