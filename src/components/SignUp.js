@@ -128,6 +128,7 @@ const SignUp = ({ navigation }) => {
             .then((response) => {
                 const data = response.user
                 if (data.uid) {
+                    // localStorage.setItem('auth', 'true')
                     navigation.navigate("Home")
                 }
                 setLoadingBtn(false)

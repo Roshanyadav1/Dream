@@ -1,9 +1,11 @@
 import { Text, Icon, Avatar, Button, Spinner } from '@ui-kitten/components'
-import { TouchableWithoutFeedback, ImageBackground, ScrollView, TouchableOpacity } from 'react-native';
+import { TouchableWithoutFeedback, ImageBackground, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import CommonInput from '../assests/common/CommonInput';
 import { auth } from '../../firebase';
+// import { AsyncStorage } from '@react-native-community/async-storage';
+
 
 const AlertIcon = (props) => (
     <Icon {...props} name='alert-circle-outline' />
@@ -63,6 +65,7 @@ const Login = ({ navigation }) => {
         </TouchableWithoutFeedback>
     );
 
+    //Rendering the error caption message
     const renderCaption = (value) => {
         if (value === "email") {
             return (
@@ -93,6 +96,7 @@ const Login = ({ navigation }) => {
         }
     }
 
+
     const handleChangeText = (value, fieldName) => {
         setUserInfo({ ...userInfo, [fieldName]: value })
     }
@@ -110,6 +114,12 @@ const Login = ({ navigation }) => {
             .then((response) => {
                 const data = response.user
                 if (data.uid) {
+                    // AsyncStorage.setItem('auth', 'true')
+                    // AsyncStorage.setItem('auth', data.uid)
+                    const data = AsyncStorage.getItem('auth')
+                    console.log("________________________")
+                    console.log(data);
+                    console.log("________________________")
                     navigation.navigate("Home")
                 }
                 setLoadingBtn(false)
@@ -123,8 +133,8 @@ const Login = ({ navigation }) => {
                         updateError('invalid password', setPasswordError)
                         break;
                     case 'auth/too-many-requests':
-                        setErrorMsg("Account has been locked try again later")
-                        updateError('invalid password', setPasswordError)
+                        Alert("Account has been locked try again later")
+                        // updateError('invalid password', setPasswordError)
                         break;
                     case 'auth/user-not-found':
                         setErrorMsg("User not found")

@@ -4,12 +4,27 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from '../components/Login';
 import SignUp from '../components/SignUp';
 import { TopNavigation } from './TopNavigation';
-import MyCollection from '../components/MyCollection';
 
 
 const Stack = createNativeStackNavigator();
-
 function StackNavigation() {
+
+    // const [isLogin, setisLogin] = React.useState(false)
+
+    // const isAuthonticated = (auth) => {
+    //     console.log("____________");
+    //     console.log(auth);
+    //     console.log("____________");
+    // }
+    // // const isLogin = localStorage.getItem("auth")
+
+    // React.useEffect(() => {
+    //     const auth = localStorage.getItem("auth")
+    //     isAuthonticated(auth);
+    //     return () => {
+    //         // cleanup
+    //     }
+    // }, [])
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Login">
