@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Image, StyleSheet, ImageBackground, Text, ScrollView } from 'react-native'
+import { StyleSheet, ScrollView } from 'react-native'
 import Card from '../assests/common/Card'
 
 
