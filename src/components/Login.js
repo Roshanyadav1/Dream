@@ -17,6 +17,8 @@ const LoadingIndicator = (props) => (
     </View>
 );
 
+
+//Validate the email
 const isValidateEmail = (email) => {
     return String(email)
         .toLowerCase()
@@ -109,16 +111,21 @@ const Login = ({ navigation }) => {
             return updateError('password', setPasswordError)
         }
         setLoadingBtn(true)
+        console.log("________________________");
+        console.log(email, password);
         auth
             .signInWithEmailAndPassword(email, password)
             .then((response) => {
                 const data = response.user
+                console.log("________________________")
+                console.log(data.uid);
+                console.log("________________________")
                 if (data.uid) {
                     // AsyncStorage.setItem('auth', 'true')
                     // AsyncStorage.setItem('auth', data.uid)
-                    const data = AsyncStorage.getItem('auth')
+                    // const auth = AsyncStorage.getItem('auth')
                     console.log("________________________")
-                    console.log(data);
+                    console.log(auth);
                     console.log("________________________")
                     navigation.navigate("Home")
                 }
@@ -134,6 +141,10 @@ const Login = ({ navigation }) => {
                         break;
                     case 'auth/too-many-requests':
                         Alert("Account has been locked try again later")
+                        // updateError('invalid password', setPasswordError)
+                        break;
+                    case 'auth/network-request-failed':
+                        Alert("Network problem")
                         // updateError('invalid password', setPasswordError)
                         break;
                     case 'auth/user-not-found':
@@ -158,7 +169,6 @@ const Login = ({ navigation }) => {
                 style={styles.inputContainer}
             >
                 <Text style={styles.heading}>Log in</Text>
-
                 {/* Message box  */}
                 <Text style={{ flex: 1, marginTop: 5 }}>
                     {

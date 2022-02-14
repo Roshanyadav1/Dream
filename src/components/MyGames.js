@@ -4,7 +4,7 @@ import { View, Text } from 'react-native'
 export default function MyGames() {
     return (
         <View>
-            <Text>My collection</Text>
+            <Text>My GAmes</Text>
         </View>
     )
 }

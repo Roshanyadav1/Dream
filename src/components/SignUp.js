@@ -123,6 +123,7 @@ const SignUp = ({ navigation }) => {
             return updateError('password', setConfirmPasswordError)
         }
         setLoadingBtn(true)
+
         auth
             .createUserWithEmailAndPassword(email, password)
             .then((response) => {

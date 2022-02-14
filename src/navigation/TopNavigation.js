@@ -12,7 +12,6 @@ const ContactMe = (props) => (
 );
 const Mycollection = (props) => (
     <Icon {...props} name='heart' />
-
 )
 const Games = (props) => (
     <Icon {...props} name='headphones' />
