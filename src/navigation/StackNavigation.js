@@ -12,16 +12,16 @@ function StackNavigation() {
     // const [isLogin, setisLogin] = React.useState(false)
 
 
-    React.useEffect(() => {
-        async function isLogin() {
-            const saved = await AsyncStorage.getItem('login');
-            if (saved) {
-                // setisLogin(true);
-                navigation.navigate("Home")
-            }
-        }
-        isLogin()
-    })
+    // React.useEffect(() => {
+    //     async function isLogin() {
+    //         const saved = await AsyncStorage.getItem('login');
+    //         if (saved) {
+    //             // setisLogin(true);
+    //             navigation.navigate("Home")
+    //         }
+    //     }
+    //     isLogin()
+    // })
 
     return (
         <NavigationContainer>
