@@ -11,23 +11,21 @@ function StackNavigation() {
 
     // const [isLogin, setisLogin] = React.useState(false)
 
-    // const isAuthonticated = (auth) => {
-    //     console.log("____________");
-    //     console.log(auth);
-    //     console.log("____________");
-    // }
-    // // const isLogin = localStorage.getItem("auth")
 
-    // React.useEffect(() => {
-    //     const auth = localStorage.getItem("auth")
-    //     isAuthonticated(auth);
-    //     return () => {
-    //         // cleanup
-    //     }
-    // }, [])
+    React.useEffect(() => {
+        async function isLogin() {
+            const saved = await AsyncStorage.getItem('login');
+            if (saved) {
+                // setisLogin(true);
+                navigation.navigate("Home")
+            }
+        }
+        isLogin()
+    })
+
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Home">
+            <Stack.Navigator initialRouteName="Login">
                 <Stack.Screen name="Login" component={Login}
                     options={{ headerShown: false }}
                 />

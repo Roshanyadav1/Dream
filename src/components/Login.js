@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import CommonInput from '../assests/common/CommonInput';
 import { auth } from '../../firebase';
-// import { AsyncStorage } from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const AlertIcon = (props) => (
@@ -17,7 +17,6 @@ const LoadingIndicator = (props) => (
     </View>
 );
 
-
 //Validate the email
 const isValidateEmail = (email) => {
     return String(email)
@@ -29,6 +28,18 @@ const isValidateEmail = (email) => {
 
 const Login = ({ navigation }) => {
 
+    const [islogin, setIsLogin] = useState(false)
+    React.useEffect(() => {
+        async function isLogin() {
+            const saved = await AsyncStorage.getItem('login');
+            if (saved) {
+                navigation.navigate("Home")
+            } else if (setIsLogin) {
+                navigation.navigate("Home")
+            }
+        }
+        isLogin()
+    }, [islogin])
     const updateError = (error, stateUpdater) => {
         stateUpdater(error)
         setTimeout(() => {
@@ -127,7 +138,12 @@ const Login = ({ navigation }) => {
                     console.log("________________________")
                     console.log(auth);
                     console.log("________________________")
-                    navigation.navigate("Home")
+                    async function saveValue() {
+                        await AsyncStorage.setItem('login', 'true');
+                        setIsLogin(true);
+                    }
+                    saveValue();
+                    // navigation.navigate("Home")
                 }
                 setLoadingBtn(false)
             })
@@ -189,7 +205,7 @@ const Login = ({ navigation }) => {
                     style={styles.input}
                     label='E-mail'
                     placeholder='E-mail '
-                    placeholderTextColor={'white'}
+                    placeholderTextColor={'#9E9E9E'}
                     caption={emailError && renderCaption("email")}
                     value={email}
                     onChangeText={(value) => handleChangeText(value, "email")}
@@ -199,7 +215,7 @@ const Login = ({ navigation }) => {
                     style={styles.input}
                     value={password}
                     label='Password'
-                    placeholderTextColor={'white'}
+                    placeholderTextColor={'#9E9E9E'}
                     placeholder='Password'
                     secureTextEntry={secureTextEntry}
                     caption={passwordError && renderCaption("password")}
@@ -276,7 +292,7 @@ const styles = StyleSheet.create({
     },
     input: {
         marginTop: 10,
-        backgroundColor: '#7f97ba',
+        backgroundColor: 'white',
     },
     directed: {
         color: 'blue',
@@ -294,3 +310,6 @@ const styles = StyleSheet.create({
         borderWidth: 1
     }
 });
+
+
+

@@ -1,9 +1,10 @@
 import { Icon, Avatar, Button, Spinner } from '@ui-kitten/components'
-import { TouchableWithoutFeedback, ImageBackground, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { TouchableWithoutFeedback, ImageBackground, ScrollView, Text, TouchableOpacity, Alert } from 'react-native';
 import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import CommonInput from '../assests/common/CommonInput';
 import { auth } from '../../firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AlertIcon = (props) => (
     <Icon {...props} name='alert-circle-outline' />
@@ -24,6 +25,7 @@ const isValidateEmail = (email) => {
 };
 
 const SignUp = ({ navigation }) => {
+    // console.log(value)
     const updateError = (error, stateUpdater) => {
         stateUpdater(error)
         setTimeout(() => {
@@ -116,8 +118,8 @@ const SignUp = ({ navigation }) => {
         if (!isValidateEmail(email)) {
             return updateError('email', setEmailError)
         }
-        if (!password.trim() && password.length < 6) {
-            return updateError('password', setPasswordError)
+        if (password.length < 6) {
+            return updateError('weak password', setPasswordError)
         }
         if (password !== confirmPassword) {
             return updateError('password', setConfirmPasswordError)
@@ -127,16 +129,26 @@ const SignUp = ({ navigation }) => {
         auth
             .createUserWithEmailAndPassword(email, password)
             .then((response) => {
+                console.log(response);
                 const data = response.user
+                console.log(JSON.stringify(data));
                 if (data.uid) {
-                    // localStorage.setItem('auth', 'true')
+                    async function saveValue() {
+                        await AsyncStorage.setItem('login', 'true');
+                    }
+                    saveValue();
                     navigation.navigate("Home")
                 }
                 setLoadingBtn(false)
             })
             .catch(error => {
+                console.log(error);
+                console.log(error.message);
                 setLoadingBtn(false)
                 switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        setErrorMsg("Email already in use !")
+                        break;
                     case 'auth/email-already-in-use':
                         setErrorMsg("Email already in use !")
                         break;
@@ -178,7 +190,7 @@ const SignUp = ({ navigation }) => {
                     style={styles.input}
                     label='Username'
                     placeholder='Username'
-                    placeholderTextColor={'white'}
+                    placeholderTextColor={'#9E9E9E'}
                     caption={userNameError && renderCaption("userName")}
                     value={userName}
                     onChangeText={(value) => handleChangeText(value, "userName")}
@@ -188,7 +200,7 @@ const SignUp = ({ navigation }) => {
                     style={styles.input}
                     label='E-mail'
                     placeholder='E-mail '
-                    placeholderTextColor={'white'}
+                    placeholderTextColor={'#9E9E9E'}
                     caption={emailError && renderCaption("email")}
                     value={email}
                     onChangeText={(value) => handleChangeText(value, "email")}
@@ -198,7 +210,7 @@ const SignUp = ({ navigation }) => {
                     style={styles.input}
                     value={password}
                     label='Password'
-                    placeholderTextColor={'white'}
+                    placeholderTextColor={'#9E9E9E'}
                     placeholder='Password'
                     secureTextEntry={secureTextEntry}
                     caption={passwordError && renderCaption("password")}
@@ -209,9 +221,9 @@ const SignUp = ({ navigation }) => {
                     errors={confirmPasswordError}
                     style={styles.input}
                     value={confirmPassword}
-                    label='confirmPassword'
-                    placeholderTextColor={'white'}
-                    placeholder='confirmPassword'
+                    label='Confirm Password'
+                    placeholderTextColor={'#9E9E9E'}
+                    placeholder='Confirm Password'
                     secureTextEntry={secureTextEntry}
                     caption={confirmPasswordError && renderCaption("confirmPassword")}
                     accessoryRight={renderIcon}
@@ -226,11 +238,12 @@ const SignUp = ({ navigation }) => {
                 </Button>
             </View>
             <View style={styles.containerBtn}>
-                <Text>Already have an account  ? </Text>
+                <Text style={styles.text}>Already have an account  ? </Text>
                 <TouchableOpacity>
                     <Text style={styles.directed}
                         onPress={() => { navigation.navigate('Login') }}
-                    >Log in</Text>
+                    >Log in
+                    </Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>
@@ -284,7 +297,7 @@ const styles = StyleSheet.create({
     },
     input: {
         marginTop: 10,
-        backgroundColor: '#7f97ba',
+        backgroundColor: 'white',
     },
     directed: {
         color: 'blue',
@@ -295,5 +308,8 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'flex-start',
         marginHorizontal: 30,
+    },
+    text: {
+        color: 'black',
     }
 });
