@@ -1,44 +1,76 @@
-import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Login from '../components/Login';
-import SignUp from '../components/SignUp';
-import { TopNavigation } from './TopNavigation';
+import { NavigationContainer } from '@react-navigation/native';
 
+import Home from '../components/auth/Home';
+import SignUp from './../components/auth/SignUp';
+import Login from '../components/auth/Login';
 
 const Stack = createNativeStackNavigator();
-function StackNavigation() {
 
-    // const [isLogin, setisLogin] = React.useState(false)
-
-
-    // React.useEffect(() => {
-    //     async function isLogin() {
-    //         const saved = await AsyncStorage.getItem('login');
-    //         if (saved) {
-    //             // setisLogin(true);
-    //             navigation.navigate("Home")
-    //         }
-    //     }
-    //     isLogin()
-    // })
-
+const StackNavigation = () => {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Login">
-                <Stack.Screen name="Login" component={Login}
-                    options={{ headerShown: false }}
+            <Stack.Navigator
+                screenOptions={{
+                    headerShown: false
+                }}
+            >
+                <Stack.Screen
+                    name="Home"
+                    component={Home}
+                    options={{
+                        title: 'Welcome to Green Leaf',
+                        headerStyle: {
+                            flex: 1,
+                            backgroundColor: '#33691e',
+                        },
+                        headerTintColor: 'white',
+                        headerTitleStyle: {
+                            fontSize: 24,
+                            textAlign: 'center',
+                            justifyContent: 'center',
+                        },
+                    }}
                 />
-                <Stack.Screen name="SignUp" component={SignUp}
-                    options={{ headerShown: false }}
+                <Stack.Screen
+                    headerMode="false"
+                    name="Login"
+                    component={Login}
+                    options={{
+                        title: 'Hello',
+                        headerStyle: {
+                            backgroundColor: '#33691e',
+                        },
+                        headerTintColor: '#fff',
+                        headerTitleStyle: {
+                            paddingRight: 48,
+                            fontSize: 24,
+                            textAlign: 'center',
+                            fontWeight: 'bold',
+                        },
+                    }}
                 />
-                <Stack.Screen name="Home" component={TopNavigation}
-                    options={{ headerShown: false }}
-                />
+                <Stack.Screen
+                    name="SignUp"
+                    component={SignUp}
+                    options={{
+                        title: 'WELCOME!',
+                        headerStyle: {
+                            backgroundColor: '#33691e',
+                        },
+                        headerTintColor: '#fff',
+                        headerTitleStyle: {
+                            paddingRight: 48,
+                            fontSize: 24,
+                            textAlign: 'center',
 
+                            fontWeight: 'bold',
+                        },
+                    }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
     );
-}
-
+};
 export default StackNavigation;

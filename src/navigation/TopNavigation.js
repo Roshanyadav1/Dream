@@ -23,24 +23,23 @@ export const TopNavigation = ({ navigation }) => {
     const shouldLoadComponent = (index) => index === selectedIndex;
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView >
             <TabView
-                style={styles.container}
                 selectedIndex={selectedIndex}
                 shouldLoadComponent={shouldLoadComponent}
                 onSelect={index => setSelectedIndex(index)}>
                 <Tab title='My Collection' icon={Mycollection}>
-                    <Layout style={styles.tabContainer} style={styles.container}>
+                    <Layout style={styles.tabContainer} >
                         <MyCollection />
                     </Layout>
                 </Tab>
                 <Tab title='Games' icon={Games}>
-                    <Layout style={styles.tabContainer} style={styles.container}>
+                    <Layout style={styles.tabContainer} >
                         <MyGames />
                     </Layout>
                 </Tab>
                 <Tab title='Find me' icon={ContactMe}>
-                    <Layout style={styles.tabContainer} style={styles.container}>
+                    <Layout style={styles.tabContainer} >
                         <FindMe />
                     </Layout>
                 </Tab>
@@ -50,10 +49,9 @@ export const TopNavigation = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
+
     tabContainer: {
+        flex: 1,
         height: 64,
         alignItems: 'center',
         justifyContent: 'center',

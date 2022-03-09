@@ -1,10 +1,10 @@
-import { Icon, Avatar, Button, Spinner } from '@ui-kitten/components'
-import { TouchableWithoutFeedback, ImageBackground, ScrollView, Text, TouchableOpacity, Alert } from 'react-native';
+import { Text, Icon, Avatar, Button, Spinner } from '@ui-kitten/components'
+import { TouchableWithoutFeedback, ImageBackground, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
-import CommonInput from '../assests/common/CommonInput';
-import { auth } from '../../firebase';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import CommonInput from '../../assests/common/CommonInput';
+import { auth } from '../../../firebase';
+
 
 const AlertIcon = (props) => (
     <Icon {...props} name='alert-circle-outline' />
@@ -16,6 +16,7 @@ const LoadingIndicator = (props) => (
     </View>
 );
 
+//Validate the email
 const isValidateEmail = (email) => {
     return String(email)
         .toLowerCase()
@@ -24,8 +25,7 @@ const isValidateEmail = (email) => {
         );
 };
 
-const SignUp = ({ navigation }) => {
-    // console.log(value)
+const Login = ({ navigation }) => {
     const updateError = (error, stateUpdater) => {
         stateUpdater(error)
         setTimeout(() => {
@@ -34,18 +34,15 @@ const SignUp = ({ navigation }) => {
     }
 
     const [userInfo, setUserInfo] = useState({
-        userName: '',
         email: '',
         password: '',
-        confirmPassword: '',
     })
 
-    const { userName, email, password, confirmPassword } = userInfo
+    const { email, password } = userInfo
 
-    const [userNameError, setUserNameError] = useState('')
+
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
-    const [confirmPasswordError, setConfirmPasswordError] = useState('')
     const [errorMsg, setErrorMsg] = useState('');
     const [loadingBtn, setLoadingBtn] = useState(false)
     const [secureTextEntry, setSecureTextEntry] = React.useState(true);
@@ -67,16 +64,8 @@ const SignUp = ({ navigation }) => {
         </TouchableWithoutFeedback>
     );
 
+    //Rendering the error caption message
     const renderCaption = (value) => {
-        if (value === "userName") {
-            return (
-                <View style={styles.captionContainer}>
-                    <Text style={styles.captionText}>
-                        {AlertIcon(styles.captionIcon)}
-                        Enter your username</Text>
-                </View>
-            )
-        }
         if (value === "email") {
             return (
                 <View style={styles.captionContainer}>
@@ -87,6 +76,15 @@ const SignUp = ({ navigation }) => {
             )
         }
         if (value === "password") {
+            if (passwordError) {
+                return (
+                    <View style={styles.captionContainer}>
+                        <Text style={styles.captionText}>
+                            {AlertIcon(styles.captionIcon)}
+                            Invalid password !</Text>
+                    </View>
+                )
+            }
             return (
                 <View style={styles.captionContainer}>
                     <Text style={styles.captionText}>
@@ -95,62 +93,53 @@ const SignUp = ({ navigation }) => {
                 </View>
             )
         }
-        if (value === "confirmPassword") {
-            return (
-                <View style={styles.captionContainer}>
-                    <Text style={styles.captionText}>
-                        {AlertIcon(styles.captionIcon)}
-                        Invalid cridential</Text>
-                </View>
-            )
-        }
     }
+
 
     const handleChangeText = (value, fieldName) => {
         setUserInfo({ ...userInfo, [fieldName]: value })
     }
 
-
     const handleSubmit = async () => {
-        if (userName.length < 3) {
-            return updateError('password', setUserNameError)
-        }
         if (!isValidateEmail(email)) {
             return updateError('email', setEmailError)
         }
         if (password.length < 6) {
-            return updateError('weak password', setPasswordError)
-        }
-        if (password !== confirmPassword) {
-            return updateError('password', setConfirmPasswordError)
+            return updateError('password', setPasswordError)
         }
         setLoadingBtn(true)
-
+        console.log("________________________");
+        console.log(email, password);
         auth
-            .createUserWithEmailAndPassword(email, password)
+            .signInWithEmailAndPassword(email, password)
             .then((response) => {
-                console.log(response);
                 const data = response.user
-                console.log(JSON.stringify(data));
-                if (data.uid) {
-                    async function saveValue() {
-                        await AsyncStorage.setItem('login', 'true');
-                    }
-                    saveValue();
-                    navigation.navigate("Home")
-                }
+                console.log("________________________")
+                console.log(data.uid);
+                console.log("________________________")
+
                 setLoadingBtn(false)
             })
             .catch(error => {
-                console.log(error);
-                console.log(error.message);
+                console.log(error.code);
                 setLoadingBtn(false)
                 switch (error.code) {
-                    case 'auth/email-already-in-use':
-                        setErrorMsg("Email already in use !")
+                    case 'auth/wrong-password':
+                        setErrorMsg("invalid password !")
+                        updateError('invalid password', setPasswordError)
                         break;
-                    case 'auth/email-already-in-use':
-                        setErrorMsg("Email already in use !")
+                    case 'auth/too-many-requests':
+                        Alert("Account has been locked try again later")
+                        // updateError('invalid password', setPasswordError)
+                        break;
+                    case 'auth/network-request-failed':
+                        Alert("Network problem")
+                        // updateError('invalid password', setPasswordError)
+                        break;
+                    case 'auth/user-not-found':
+                        setErrorMsg("User not found")
+                        updateError('invalid password', setPasswordError)
+                        updateError('invalid email', setEmailError)
                         break;
                 }
             })
@@ -161,17 +150,16 @@ const SignUp = ({ navigation }) => {
         <ScrollView style={{ flex: 1, display: 'flex' }}>
             <View style={styles.profile}>
                 <Avatar style={styles.images}
-                    source={require('../assests/images/logo.png')}
+                    source={require('../../assests/images/logo1.png')}
                     ImageComponent={ImageBackground}
                 />
             </View>
             <View
                 style={styles.inputContainer}
             >
-                <Text style={styles.heading}>Sign Up</Text>
-
+                <Text style={styles.heading}>Log in</Text>
                 {/* Message box  */}
-                <Text>
+                <Text style={{ flex: 1, marginTop: 5 }}>
                     {
                         errorMsg &&
                         < CommonInput
@@ -185,16 +173,6 @@ const SignUp = ({ navigation }) => {
                 </Text>
                 {/* Message box end here  */}
 
-                <CommonInput
-                    errors={userNameError}
-                    style={styles.input}
-                    label='Username'
-                    placeholder='Username'
-                    placeholderTextColor={'#9E9E9E'}
-                    caption={userNameError && renderCaption("userName")}
-                    value={userName}
-                    onChangeText={(value) => handleChangeText(value, "userName")}
-                />
                 <CommonInput
                     errors={emailError}
                     style={styles.input}
@@ -214,46 +192,46 @@ const SignUp = ({ navigation }) => {
                     placeholder='Password'
                     secureTextEntry={secureTextEntry}
                     caption={passwordError && renderCaption("password")}
-                    // accessoryRight={renderIcon}
+                    accessoryRight={renderIcon}
                     onChangeText={(value) => handleChangeText(value, "password")}
                 />
-                <CommonInput
-                    errors={confirmPasswordError}
-                    style={styles.input}
-                    value={confirmPassword}
-                    label='Confirm Password'
-                    placeholderTextColor={'#9E9E9E'}
-                    placeholder='Confirm Password'
-                    secureTextEntry={secureTextEntry}
-                    caption={confirmPasswordError && renderCaption("confirmPassword")}
-                    accessoryRight={renderIcon}
-                    onChangeText={(value) => handleChangeText(value, "confirmPassword")}
-                />
-                <Button style={styles.button}
-                    onPress={handleSubmit} appearance='outline' status='primary'
-                    accessoryRight={loadingBtn ? LoadingIndicator : ""}
-                    disabled={loadingBtn ? "disabled" : ""}
-                >
-                    Sign in
-                </Button>
+
+                <View >
+                    <Button
+                        onPress={handleSubmit}
+                        accessoryRight={loadingBtn ? LoadingIndicator : ""}
+                        disabled={loadingBtn ? "disabled" : ""}
+                        style={styles.button}
+                        appearance='ghost' status='control'>
+                        Log in
+                    </Button>
+                </View>
+
+
             </View>
             <View style={styles.containerBtn}>
-                <Text style={styles.text}>Already have an account  ? </Text>
+                <Text>Create new account ? </Text>
                 <TouchableOpacity>
                     <Text style={styles.directed}
-                        onPress={() => { navigation.navigate('Login') }}
-                    >Log in
-                    </Text>
+                        onPress={() => { navigation.navigate('SignUp') }}
+                    >Sign up</Text>
                 </TouchableOpacity>
             </View>
-        </ScrollView>
+        </ScrollView >
     )
 }
-export default SignUp
+
+export default Login
 
 const styles = StyleSheet.create({
+    controlContainer: {
+
+        borderRadius: 4,
+        justifyContent: 'center',
+        backgroundColor: '#3366FF',
+    },
     heading: {
-        color: '#7f97ba',
+        color: '#33691e',
         fontWeight: 'bold',
         fontFamily: 'Helvetica Neue',
         fontSize: 30,
@@ -294,13 +272,16 @@ const styles = StyleSheet.create({
     button: {
         width: 150,
         margin: 20,
+        backgroundColor: '#33691e',
+        borderWidth: 1,
+        borderColor: '#33691e',
     },
     input: {
         marginTop: 10,
         backgroundColor: 'white',
     },
     directed: {
-        color: 'blue',
+        color: '#33691e',
         fontWeight: 'bold',
     },
     containerBtn: {
@@ -309,7 +290,12 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         marginHorizontal: 30,
     },
-    text: {
-        color: 'black',
+    errors: {
+        marginTop: 5,
+        borderColor: 'red',
+        borderWidth: 1
     }
 });
+
+
+

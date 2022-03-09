@@ -1,11 +1,10 @@
-import { Text, Icon, Avatar, Button, Spinner } from '@ui-kitten/components'
-import { TouchableWithoutFeedback, ImageBackground, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { Icon, Avatar, Button, Spinner } from '@ui-kitten/components'
+import { TouchableWithoutFeedback, ImageBackground, ScrollView, Text, TouchableOpacity, Alert } from 'react-native';
 import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
-import CommonInput from '../assests/common/CommonInput';
-import { auth } from '../../firebase';
+import CommonInput from '../../assests/common/CommonInput';
+import { auth } from '../../../firebase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 const AlertIcon = (props) => (
     <Icon {...props} name='alert-circle-outline' />
@@ -17,7 +16,6 @@ const LoadingIndicator = (props) => (
     </View>
 );
 
-//Validate the email
 const isValidateEmail = (email) => {
     return String(email)
         .toLowerCase()
@@ -26,20 +24,8 @@ const isValidateEmail = (email) => {
         );
 };
 
-const Login = ({ navigation }) => {
-
-    const [islogin, setIsLogin] = useState(false)
-    React.useEffect(() => {
-        async function isLogin() {
-            const saved = await AsyncStorage.getItem('login');
-            if (saved) {
-                navigation.navigate("Home")
-            } else if (setIsLogin) {
-                navigation.navigate("Home")
-            }
-        }
-        isLogin()
-    }, [islogin])
+const SignUp = ({ navigation }) => {
+    // console.log(value)
     const updateError = (error, stateUpdater) => {
         stateUpdater(error)
         setTimeout(() => {
@@ -48,15 +34,18 @@ const Login = ({ navigation }) => {
     }
 
     const [userInfo, setUserInfo] = useState({
+        userName: '',
         email: '',
         password: '',
+        confirmPassword: '',
     })
 
-    const { email, password } = userInfo
+    const { userName, email, password, confirmPassword } = userInfo
 
-
+    const [userNameError, setUserNameError] = useState('')
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [confirmPasswordError, setConfirmPasswordError] = useState('')
     const [errorMsg, setErrorMsg] = useState('');
     const [loadingBtn, setLoadingBtn] = useState(false)
     const [secureTextEntry, setSecureTextEntry] = React.useState(true);
@@ -78,8 +67,16 @@ const Login = ({ navigation }) => {
         </TouchableWithoutFeedback>
     );
 
-    //Rendering the error caption message
     const renderCaption = (value) => {
+        if (value === "userName") {
+            return (
+                <View style={styles.captionContainer}>
+                    <Text style={styles.captionText}>
+                        {AlertIcon(styles.captionIcon)}
+                        Enter your username</Text>
+                </View>
+            )
+        }
         if (value === "email") {
             return (
                 <View style={styles.captionContainer}>
@@ -90,15 +87,6 @@ const Login = ({ navigation }) => {
             )
         }
         if (value === "password") {
-            if (passwordError) {
-                return (
-                    <View style={styles.captionContainer}>
-                        <Text style={styles.captionText}>
-                            {AlertIcon(styles.captionIcon)}
-                            Invalid password !</Text>
-                    </View>
-                )
-            }
             return (
                 <View style={styles.captionContainer}>
                     <Text style={styles.captionText}>
@@ -107,66 +95,62 @@ const Login = ({ navigation }) => {
                 </View>
             )
         }
+        if (value === "confirmPassword") {
+            return (
+                <View style={styles.captionContainer}>
+                    <Text style={styles.captionText}>
+                        {AlertIcon(styles.captionIcon)}
+                        Invalid cridential</Text>
+                </View>
+            )
+        }
     }
-
 
     const handleChangeText = (value, fieldName) => {
         setUserInfo({ ...userInfo, [fieldName]: value })
     }
 
+
     const handleSubmit = async () => {
+        if (userName.length < 3) {
+            return updateError('password', setUserNameError)
+        }
         if (!isValidateEmail(email)) {
             return updateError('email', setEmailError)
         }
         if (password.length < 6) {
-            return updateError('password', setPasswordError)
+            return updateError('weak password', setPasswordError)
+        }
+        if (password !== confirmPassword) {
+            return updateError('password', setConfirmPasswordError)
         }
         setLoadingBtn(true)
-        console.log("________________________");
-        console.log(email, password);
+
         auth
-            .signInWithEmailAndPassword(email, password)
+            .createUserWithEmailAndPassword(email, password)
             .then((response) => {
+                console.log(response);
                 const data = response.user
-                console.log("________________________")
-                console.log(data.uid);
-                console.log("________________________")
+                console.log(JSON.stringify(data));
                 if (data.uid) {
-                    // AsyncStorage.setItem('auth', 'true')
-                    // AsyncStorage.setItem('auth', data.uid)
-                    // const auth = AsyncStorage.getItem('auth')
-                    console.log("________________________")
-                    console.log(auth);
-                    console.log("________________________")
                     async function saveValue() {
                         await AsyncStorage.setItem('login', 'true');
-                        setIsLogin(true);
                     }
                     saveValue();
-                    // navigation.navigate("Home")
+                    navigation.navigate("Home")
                 }
                 setLoadingBtn(false)
             })
             .catch(error => {
-                console.log(error.code);
+                console.log(error);
+                console.log(error.message);
                 setLoadingBtn(false)
                 switch (error.code) {
-                    case 'auth/wrong-password':
-                        setErrorMsg("invalid password !")
-                        updateError('invalid password', setPasswordError)
+                    case 'auth/email-already-in-use':
+                        setErrorMsg("Email already in use !")
                         break;
-                    case 'auth/too-many-requests':
-                        Alert("Account has been locked try again later")
-                        // updateError('invalid password', setPasswordError)
-                        break;
-                    case 'auth/network-request-failed':
-                        Alert("Network problem")
-                        // updateError('invalid password', setPasswordError)
-                        break;
-                    case 'auth/user-not-found':
-                        setErrorMsg("User not found")
-                        updateError('invalid password', setPasswordError)
-                        updateError('invalid email', setEmailError)
+                    case 'auth/email-already-in-use':
+                        setErrorMsg("Email already in use !")
                         break;
                 }
             })
@@ -177,16 +161,17 @@ const Login = ({ navigation }) => {
         <ScrollView style={{ flex: 1, display: 'flex' }}>
             <View style={styles.profile}>
                 <Avatar style={styles.images}
-                    source={require('../assests/images/logo.png')}
+                    source={require('../../assests/images/logo1.png')}
                     ImageComponent={ImageBackground}
                 />
             </View>
             <View
                 style={styles.inputContainer}
             >
-                <Text style={styles.heading}>Log in</Text>
+                <Text style={styles.heading}>Sign Up</Text>
+
                 {/* Message box  */}
-                <Text style={{ flex: 1, marginTop: 5 }}>
+                <Text>
                     {
                         errorMsg &&
                         < CommonInput
@@ -200,6 +185,16 @@ const Login = ({ navigation }) => {
                 </Text>
                 {/* Message box end here  */}
 
+                <CommonInput
+                    errors={userNameError}
+                    style={styles.input}
+                    label='Username'
+                    placeholder='Username'
+                    placeholderTextColor={'#9E9E9E'}
+                    caption={userNameError && renderCaption("userName")}
+                    value={userName}
+                    onChangeText={(value) => handleChangeText(value, "userName")}
+                />
                 <CommonInput
                     errors={emailError}
                     style={styles.input}
@@ -219,36 +214,51 @@ const Login = ({ navigation }) => {
                     placeholder='Password'
                     secureTextEntry={secureTextEntry}
                     caption={passwordError && renderCaption("password")}
-                    accessoryRight={renderIcon}
+                    // accessoryRight={renderIcon}
                     onChangeText={(value) => handleChangeText(value, "password")}
                 />
+                <CommonInput
+                    errors={confirmPasswordError}
+                    style={styles.input}
+                    value={confirmPassword}
+                    label='Confirm Password'
+                    placeholderTextColor={'#9E9E9E'}
+                    placeholder='Confirm Password'
+                    secureTextEntry={secureTextEntry}
+                    caption={confirmPasswordError && renderCaption("confirmPassword")}
+                    accessoryRight={renderIcon}
+                    onChangeText={(value) => handleChangeText(value, "confirmPassword")}
+                />
+                <View >
+                    <Button
+                        onPress={handleSubmit}
+                        accessoryRight={loadingBtn ? LoadingIndicator : ""}
+                        disabled={loadingBtn ? "disabled" : ""}
+                        style={styles.button}
+                        appearance='ghost' status='control'>
+                        Sign in
+                    </Button>
+                </View>
 
-                <Button style={styles.button}
-                    onPress={handleSubmit} appearance='outline' status='primary'
-                    accessoryRight={loadingBtn ? LoadingIndicator : ""}
-                    disabled={loadingBtn ? "disabled" : ""}
-                >
-                    Login
-                </Button>
+
             </View>
             <View style={styles.containerBtn}>
-                <Text>Create new account ? </Text>
+                <Text style={styles.text}>Already have an account  ? </Text>
                 <TouchableOpacity>
                     <Text style={styles.directed}
-                        onPress={() => { navigation.navigate('SignUp') }}
-                    >Sign up</Text>
+                        onPress={() => { navigation.navigate('Login') }}
+                    >Log in
+                    </Text>
                 </TouchableOpacity>
             </View>
-        </ScrollView >
+        </ScrollView>
     )
 }
-
-
-export default Login
+export default SignUp
 
 const styles = StyleSheet.create({
     heading: {
-        color: '#7f97ba',
+        color: '#33691e',
         fontWeight: 'bold',
         fontFamily: 'Helvetica Neue',
         fontSize: 30,
@@ -289,13 +299,16 @@ const styles = StyleSheet.create({
     button: {
         width: 150,
         margin: 20,
+        backgroundColor: '#33691e',
+        borderWidth: 1,
+        borderColor: '#33691e',
     },
     input: {
         marginTop: 10,
         backgroundColor: 'white',
     },
     directed: {
-        color: 'blue',
+        color: '#33691e',
         fontWeight: 'bold',
     },
     containerBtn: {
@@ -304,12 +317,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         marginHorizontal: 30,
     },
-    errors: {
-        marginTop: 5,
-        borderColor: 'red',
-        borderWidth: 1
+    text: {
+        color: 'black',
     }
 });
-
-
-
