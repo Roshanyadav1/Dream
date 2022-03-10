@@ -19,13 +19,18 @@ const BottomTabNaviagation = () => {
     return (
         <Tab.Navigator
             screenOptions={{
+                tabBarActiveTintColor: '#33691e',
+                tabBarInactiveTintColor: 'black',
+                headerShown: false,
                 tabBarStyle: {
                     position: 'absolute',
                     backgroundColor: '#c1f0af',
                 },
             }}
-            initialRouteName="Home">
+            initialRouteName="Home"
+        >
             <Tab.Screen
+
                 name={'Home'}
                 component={HomeScreen}
                 options={{
@@ -53,7 +58,7 @@ const BottomTabNaviagation = () => {
                 name={'Hello!'}
                 component={LogoScreen}
                 options={{
-                    tabBarIcon: ({ focused }) => (
+                    tabBarIcon: () => (
                         <View
                         >
                             <Image style={style.mainlogo} source={logo1}></Image>
@@ -92,40 +97,55 @@ export default BottomTabNaviagation;
 
 function LogoScreen() {
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Logo!</Text>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'green' }}>
+            <Image
+                source={logo1}
+                style={{ height: 88, width: 88 }}></Image>
+            <Text>Love to Working on it </Text>
         </View>
     );
 }
 
 function UserScreen() {
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>UserProfile!</Text>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'green' }}>
+            <Image
+                source={logo1}
+                style={{ height: 88, width: 88 }}></Image>
+            <Text>Profile ! Working on it </Text>
         </View>
     );
 }
 
 function HomeScreen() {
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Home!</Text>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'green' }}>
+            <Image
+                source={logo1}
+                style={{ height: 88, width: 88 }}></Image>
+            <Text>Home ! Working on it </Text>
         </View>
     );
 }
 
 function ProcessScreen() {
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>ProcessBar!</Text>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'green' }}>
+            <Image
+                source={logo1}
+                style={{ height: 88, width: 88 }}></Image>
+            <Text>Linded In ! Working on it </Text>
         </View>
     );
 }
 
 function PersonalScreen() {
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Git</Text>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'green' }}>
+            <Image
+                source={logo1}
+                style={{ height: 88, width: 88 }}></Image>
+            <Text>Git ! Working on it </Text>
         </View>
     );
 }
@@ -140,12 +160,13 @@ const style = StyleSheet.create({
         marginBottom: 30,
     },
     image: {
-        width: 25,
-        height: 25,
+        width: 20,
+        height: 20,
     },
     imageActive: {
-        width: 30,
-        height: 30,
-        marginBottom: 5,
+        width: 25,
+        height: 25,
+        marginBottom: 3,
+        borderRadius: 4,
     }
 })
