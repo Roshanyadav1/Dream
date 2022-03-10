@@ -1,18 +1,36 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 //components
-import MyLibrary from './../components/MyLibrary';
-import About from '../components/About';
 import BottomTabNaviagation from './BottomTabNaviagation';
+import { View, Text } from 'react-native';
 
 
 const DrawerNavigation = () => {
     const Drawer = createDrawerNavigator();
 
+    function About() {
+        return (
+            <View>
+                <Text>About</Text>
+            </View>
+        )
+    }
+
+    function MyLibrary() {
+        return (
+            <View>
+                <Text>MyLibrary</Text>
+            </View>
+        )
+    }
+
     return (
         //Making the drawer navigation
         <React.Fragment>
             <Drawer.Navigator
+                screenOptions={{
+                    headerShown: false
+                }}
                 initialRouteName="GreenLeaf"
             >
                 <Drawer.Screen
@@ -28,3 +46,5 @@ const DrawerNavigation = () => {
 };
 
 export default DrawerNavigation;
+
+
