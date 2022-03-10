@@ -101,48 +101,49 @@ const Login = ({ navigation }) => {
     }
 
     const handleSubmit = async () => {
-        if (!isValidateEmail(email)) {
-            return updateError('email', setEmailError)
-        }
-        if (password.length < 6) {
-            return updateError('password', setPasswordError)
-        }
-        setLoadingBtn(true)
-        console.log("________________________");
-        console.log(email, password);
-        auth
-            .signInWithEmailAndPassword(email, password)
-            .then((response) => {
-                const data = response.user
-                console.log("________________________")
-                console.log(data.uid);
-                console.log("________________________")
+        navigation.navigate('DrawerNavigation')
+        // if (!isValidateEmail(email)) {
+        //     return updateError('email', setEmailError)
+        // }
+        // if (password.length < 6) {
+        //     return updateError('password', setPasswordError)
+        // }
+        // setLoadingBtn(true)
+        // console.log("________________________");
+        // console.log(email, password);
+        // auth
+        //     .signInWithEmailAndPassword(email, password)
+        //     .then((response) => {
+        //         const data = response.user
+        //         console.log("________________________")
+        //         console.log(data.uid);
+        //         console.log("________________________")
 
-                setLoadingBtn(false)
-            })
-            .catch(error => {
-                console.log(error.code);
-                setLoadingBtn(false)
-                switch (error.code) {
-                    case 'auth/wrong-password':
-                        setErrorMsg("invalid password !")
-                        updateError('invalid password', setPasswordError)
-                        break;
-                    case 'auth/too-many-requests':
-                        Alert("Account has been locked try again later")
-                        // updateError('invalid password', setPasswordError)
-                        break;
-                    case 'auth/network-request-failed':
-                        Alert("Network problem")
-                        // updateError('invalid password', setPasswordError)
-                        break;
-                    case 'auth/user-not-found':
-                        setErrorMsg("User not found")
-                        updateError('invalid password', setPasswordError)
-                        updateError('invalid email', setEmailError)
-                        break;
-                }
-            })
+        //         setLoadingBtn(false)
+        //     })
+        //     .catch(error => {
+        //         console.log(error.code);
+        //         setLoadingBtn(false)
+        //         switch (error.code) {
+        //             case 'auth/wrong-password':
+        //                 setErrorMsg("invalid password !")
+        //                 updateError('invalid password', setPasswordError)
+        //                 break;
+        //             case 'auth/too-many-requests':
+        //                 Alert("Account has been locked try again later")
+        //                 // updateError('invalid password', setPasswordError)
+        //                 break;
+        //             case 'auth/network-request-failed':
+        //                 Alert("Network problem")
+        //                 // updateError('invalid password', setPasswordError)
+        //                 break;
+        //             case 'auth/user-not-found':
+        //                 setErrorMsg("User not found")
+        //                 updateError('invalid password', setPasswordError)
+        //                 updateError('invalid email', setEmailError)
+        //                 break;
+        //         }
+        //     })
     }
 
 

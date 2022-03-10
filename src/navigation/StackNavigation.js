@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import Home from '../components/auth/Home';
 import SignUp from './../components/auth/SignUp';
 import Login from '../components/auth/Login';
+import DrawerNavigation from './DrawerNavigation';
 
 const Stack = createNativeStackNavigator();
 
@@ -54,6 +55,24 @@ const StackNavigation = () => {
                 <Stack.Screen
                     name="SignUp"
                     component={SignUp}
+                    options={{
+                        title: 'WELCOME!',
+                        headerStyle: {
+                            backgroundColor: '#33691e',
+                        },
+                        headerTintColor: '#fff',
+                        headerTitleStyle: {
+                            paddingRight: 48,
+                            fontSize: 24,
+                            textAlign: 'center',
+
+                            fontWeight: 'bold',
+                        },
+                    }}
+                />
+                <Stack.Screen
+                    name="DrawerNavigation"
+                    component={DrawerNavigation}
                     options={{
                         title: 'WELCOME!',
                         headerStyle: {

@@ -2,29 +2,33 @@ import React from 'react';
 import { Button } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 //components
-import { HomeStack, AboutStack, StatusStack } from './MyStack';
+import Landing from '../components/Landing';
+import MyLibrary from './../components/MyLibrary';
+import About from '../components/About';
+
 
 const DrawerNavigation = ({ navigation }) => {
     const Drawer = createDrawerNavigator();
-    // to open the drawer
-    const openDrawe = () => {
-        navigation.openDrawer();
-    };
+
 
     return (
         //Making the drawer navigation
-        <Drawer.Navigator>
+        <Drawer.Navigator
+            initialRouteName="Landing"
+        >
             <Drawer.Screen
-                name="Home"
-                component={HomeStack}
+                name="Landing"
+                component={Landing}
                 options={{
                     headerRight: () => (
-                        <Button onPress={openDrawe} title="Info" color="#000" />
+                        <Button
+                            // onPress={() => props.navigation.toggleDrawer()}
+                            title="Info" color="#000" />
                     ),
                 }}
             />
-            <Drawer.Screen name="Status" component={StatusStack} />
-            <Drawer.Screen name="About" component={AboutStack} />
+            <Drawer.Screen name="MyLibrary" component={MyLibrary} />
+            <Drawer.Screen name="About" component={About} />
         </Drawer.Navigator>
     );
 };

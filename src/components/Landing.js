@@ -4,7 +4,7 @@ import React from 'react'
 export default function Landing() {
     return (
         <View>
-            <Text>Landing</Text>
+            <Text>Home</Text>
         </View>
     )
 }
