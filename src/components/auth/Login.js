@@ -10,9 +10,9 @@ const AlertIcon = (props) => (
     <Icon {...props} name='alert-circle-outline' />
 );
 
-const LoadingIndicator = (props) => (
-    <View style={[props.style, styles.indicator]}>
-        <Spinner size='small' />
+const LoadingIndicator = () => (
+    <View >
+        <Spinner size='small' style={styles.indicator} />
     </View>
 );
 
@@ -102,48 +102,48 @@ const Login = ({ navigation }) => {
 
     const handleSubmit = async () => {
         navigation.navigate('DrawerNavigation')
-        // if (!isValidateEmail(email)) {
-        //     return updateError('email', setEmailError)
-        // }
-        // if (password.length < 6) {
-        //     return updateError('password', setPasswordError)
-        // }
-        // setLoadingBtn(true)
-        // console.log("________________________");
-        // console.log(email, password);
-        // auth
-        //     .signInWithEmailAndPassword(email, password)
-        //     .then((response) => {
-        //         const data = response.user
-        //         console.log("________________________")
-        //         console.log(data.uid);
-        //         console.log("________________________")
-
-        //         setLoadingBtn(false)
-        //     })
-        //     .catch(error => {
-        //         console.log(error.code);
-        //         setLoadingBtn(false)
-        //         switch (error.code) {
-        //             case 'auth/wrong-password':
-        //                 setErrorMsg("invalid password !")
-        //                 updateError('invalid password', setPasswordError)
-        //                 break;
-        //             case 'auth/too-many-requests':
-        //                 Alert("Account has been locked try again later")
-        //                 // updateError('invalid password', setPasswordError)
-        //                 break;
-        //             case 'auth/network-request-failed':
-        //                 Alert("Network problem")
-        //                 // updateError('invalid password', setPasswordError)
-        //                 break;
-        //             case 'auth/user-not-found':
-        //                 setErrorMsg("User not found")
-        //                 updateError('invalid password', setPasswordError)
-        //                 updateError('invalid email', setEmailError)
-        //                 break;
-        //         }
-        //     })
+        if (!isValidateEmail(email)) {
+            return updateError('email', setEmailError)
+        }
+        if (password.length < 6) {
+            return updateError('password', setPasswordError)
+        }
+        setLoadingBtn(true)
+        console.log("________________________");
+        console.log(email, password);
+        auth
+            .signInWithEmailAndPassword(email, password)
+            .then((response) => {
+                const data = response.user
+                console.log("________________________")
+                console.log(data.uid);
+                console.log("________________________")
+                setLoadingBtn(false)
+                navigation.navigate('DrawerNavigation')
+            })
+            .catch(error => {
+                console.log(error.code);
+                setLoadingBtn(false)
+                switch (error.code) {
+                    case 'auth/wrong-password':
+                        setErrorMsg("invalid password !")
+                        updateError('invalid password', setPasswordError)
+                        break;
+                    case 'auth/too-many-requests':
+                        Alert("Account has been locked try again later")
+                        // updateError('invalid password', setPasswordError)
+                        break;
+                    case 'auth/network-request-failed':
+                        Alert("Network problem")
+                        // updateError('invalid password', setPasswordError)
+                        break;
+                    case 'auth/user-not-found':
+                        setErrorMsg("User not found")
+                        updateError('invalid password', setPasswordError)
+                        updateError('invalid email', setEmailError)
+                        break;
+                }
+            })
     }
 
 
@@ -203,7 +203,7 @@ const Login = ({ navigation }) => {
                         accessoryRight={loadingBtn ? LoadingIndicator : ""}
                         disabled={loadingBtn ? "disabled" : ""}
                         style={styles.button}
-                        appearance='ghost' status='control'>
+                        appearance='control' status='control'>
                         Log in
                     </Button>
                 </View>
@@ -225,8 +225,12 @@ const Login = ({ navigation }) => {
 export default Login
 
 const styles = StyleSheet.create({
-    controlContainer: {
 
+    indicator: {
+        borderColor: '#214513',
+        color: 'white',
+    },
+    controlContainer: {
         borderRadius: 4,
         justifyContent: 'center',
         backgroundColor: '#3366FF',
@@ -280,6 +284,7 @@ const styles = StyleSheet.create({
     input: {
         marginTop: 10,
         backgroundColor: 'white',
+        borderColor: '#33691e',
     },
     directed: {
         color: '#33691e',

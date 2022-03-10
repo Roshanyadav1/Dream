@@ -1,4 +1,5 @@
 import { Input } from '@ui-kitten/components'
+import { Text } from 'react-native';
 import React from 'react'
 
 export default function CommonInput({
@@ -24,7 +25,11 @@ export default function CommonInput({
         <Input
             style={[{ borderBottomColor: (getBorderBottomColor()), ...style }]}
             value={value}
-            label={label}
+            label={<Text style={{
+                backgroundColor: 'red',
+                color: '#33691e',
+                fontWeight: 'bold',
+            }}>{label}</Text>}
             disabled={disabled}
             placeholder={placeholder}
             secureTextEntry={secureTextEntry}

@@ -4,15 +4,15 @@ import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import CommonInput from '../../assests/common/CommonInput';
 import { auth } from '../../../firebase';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AlertIcon = (props) => (
     <Icon {...props} name='alert-circle-outline' />
 );
 
-const LoadingIndicator = (props) => (
-    <View style={[props.style, styles.indicator]}>
-        <Spinner size='small' />
+const LoadingIndicator = () => (
+    <View >
+        <Spinner size='small' style={styles.indicator} />
     </View>
 );
 
@@ -134,10 +134,10 @@ const SignUp = ({ navigation }) => {
                 console.log(JSON.stringify(data));
                 if (data.uid) {
                     async function saveValue() {
-                        await AsyncStorage.setItem('login', 'true');
+                        // await AsyncStorage.setItem('login', 'true');
                     }
                     saveValue();
-                    navigation.navigate("Home")
+                    navigation.navigate('DrawerNavigation')
                 }
                 setLoadingBtn(false)
             })
@@ -235,7 +235,8 @@ const SignUp = ({ navigation }) => {
                         accessoryRight={loadingBtn ? LoadingIndicator : ""}
                         disabled={loadingBtn ? "disabled" : ""}
                         style={styles.button}
-                        appearance='ghost' status='control'>
+                        appearance='control'
+                        status='control'>
                         Sign in
                     </Button>
                 </View>
@@ -257,6 +258,10 @@ const SignUp = ({ navigation }) => {
 export default SignUp
 
 const styles = StyleSheet.create({
+    indicator: {
+        borderColor: '#214513',
+        color: 'white',
+    },
     heading: {
         color: '#33691e',
         fontWeight: 'bold',
@@ -306,6 +311,7 @@ const styles = StyleSheet.create({
     input: {
         marginTop: 10,
         backgroundColor: 'white',
+        borderColor: '#33691e',
     },
     directed: {
         color: '#33691e',
