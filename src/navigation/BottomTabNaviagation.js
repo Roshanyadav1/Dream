@@ -12,6 +12,7 @@ import home from '../assests/images/home.png';
 import git from '../assests/images/git.png';
 import linkedin from '../assests/images/linkedin.png';
 import profile from '../assests/images/profile.png';
+import Hello from '../components/user/Hello';
 
 const Tab = createBottomTabNavigator();
 
@@ -56,7 +57,7 @@ const BottomTabNaviagation = () => {
                 }}></Tab.Screen>
             <Tab.Screen
                 name={'Hello!'}
-                component={LogoScreen}
+                component={Hello}
                 options={{
                     tabBarIcon: () => (
                         <View
@@ -94,17 +95,6 @@ const BottomTabNaviagation = () => {
 };
 
 export default BottomTabNaviagation;
-
-function LogoScreen() {
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'green' }}>
-            <Image
-                source={logo1}
-                style={{ height: 88, width: 88 }}></Image>
-            <Text>Love to Working on it </Text>
-        </View>
-    );
-}
 
 function UserScreen() {
     return (
