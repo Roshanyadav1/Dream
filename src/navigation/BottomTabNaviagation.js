@@ -12,8 +12,11 @@ import home from '../assests/images/home.png';
 import git from '../assests/images/git.png';
 import linkedin from '../assests/images/linkedin.png';
 import profile from '../assests/images/profile.png';
-import Hello from '../components/user/Hello';
-
+import Hello from '../components/user/Hello'
+import HomeScreen from '../components/user/HomeScreen';
+import PersonalScreen from '../components/user/PersonalScreen';
+import ProcessScreen from '../components/user/ProcessScreen';
+import UserScreen from '../components/user/UserScreen';
 const Tab = createBottomTabNavigator();
 
 const BottomTabNaviagation = () => {
@@ -25,7 +28,7 @@ const BottomTabNaviagation = () => {
                 headerShown: false,
                 tabBarStyle: {
                     position: 'absolute',
-                    backgroundColor: '#c1f0af',
+                    backgroundColor: '#003300',
                 },
             }}
             initialRouteName="Home"
@@ -96,49 +99,7 @@ const BottomTabNaviagation = () => {
 
 export default BottomTabNaviagation;
 
-function UserScreen() {
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'green' }}>
-            <Image
-                source={logo1}
-                style={{ height: 88, width: 88 }}></Image>
-            <Text>Profile ! Working on it </Text>
-        </View>
-    );
-}
 
-function HomeScreen() {
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'green' }}>
-            <Image
-                source={logo1}
-                style={{ height: 88, width: 88 }}></Image>
-            <Text>Home ! Working on it </Text>
-        </View>
-    );
-}
-
-function ProcessScreen() {
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'green' }}>
-            <Image
-                source={logo1}
-                style={{ height: 88, width: 88 }}></Image>
-            <Text>Linded In ! Working on it </Text>
-        </View>
-    );
-}
-
-function PersonalScreen() {
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'green' }}>
-            <Image
-                source={logo1}
-                style={{ height: 88, width: 88 }}></Image>
-            <Text>Git ! Working on it </Text>
-        </View>
-    );
-}
 
 const style = StyleSheet.create({
     mainlogo: {

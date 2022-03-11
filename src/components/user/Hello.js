@@ -1,10 +1,26 @@
-import { View, Text, Button } from 'react-native'
+import { View, Text, Image, StyleSheet } from 'react-native'
 import React from 'react'
+import logo1 from '../../assests/images/logo1.png';
 
 export default function Hello() {
     return (
-        <View>
+        <View style={styles.container}>
+            <Image source={logo1} resizeMode="cover" style={styles.image} />
+
             <Text>Hello</Text>
         </View>
     )
 }
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    image: {
+        flex: 1,
+        minWidth: 450,
+        backgroundColor: 'green',
+        justifyContent: "center"
+    },
+});

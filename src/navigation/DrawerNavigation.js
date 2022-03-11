@@ -1,9 +1,11 @@
 import React from 'react';
-import { createDrawerNavigator, DrawerItem, DrawerItemList, DrawerContentScrollView } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerItemList, DrawerContentScrollView } from '@react-navigation/drawer';
 //components
 import BottomTabNaviagation from './BottomTabNaviagation';
-import { View, Text, Image, StyleSheet, SafeAreaView } from 'react-native';
+import { Text, Image, StyleSheet, SafeAreaView } from 'react-native';
 import logo1 from '../assests/images/logo1.png';
+import AboutUs from '../components/user/AboutUs';
+import MyLibrary from './../components/user/MyLibrary';
 
 const DrawerNavigation = () => {
     const Drawer = createDrawerNavigator();
@@ -15,15 +17,15 @@ const DrawerNavigation = () => {
         <React.Fragment>
             <Drawer.Navigator
                 screenOptions={{
-                    headerTintColor: 'green',//header heading color
+                    headerTintColor: 'black',//header heading color
                     headerStyle: {
-                        backgroundColor: '#c1f0af'
+                        backgroundColor: '#003300',
                     },
                     drawerActiveTintColor: '#33691e',
                     drawerInactiveTintColor: 'black',
                     drawerStyle: {
                         position: 'absolute',
-                        backgroundColor: '#c1f0af',
+                        backgroundColor: '#003300',
                     },
                 }}
                 initialRouteName="GreenLeaf"
@@ -35,7 +37,7 @@ const DrawerNavigation = () => {
                     options={{ drawerLabel: 'Home' }}
                 />
                 <Drawer.Screen name="MyLibrary" component={MyLibrary} />
-                <Drawer.Screen name="About" component={About} />
+                <Drawer.Screen name="About" component={AboutUs} />
             </Drawer.Navigator>
         </React.Fragment>
     );
@@ -59,27 +61,7 @@ function CustomSidebarMenu(props) {
     )
 }
 
-function About() {
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'green' }}>
-            <Image
-                source={logo1}
-                style={{ height: 88, width: 88 }}></Image>
-            <Text>About ! Working on it </Text>
-        </View>
-    )
-}
 
-function MyLibrary() {
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'green' }}>
-            <Image
-                source={logo1}
-                style={{ height: 88, width: 88 }}></Image>
-            <Text>MyLibrary ! Working on it </Text>
-        </View >
-    )
-}
 
 
 const styles = StyleSheet.create({
