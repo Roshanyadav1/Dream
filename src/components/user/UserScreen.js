@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     card: {
         padding: 5,
         opacity: 1,
-        color: "black",
+        color: "white",
         fontSize: 15,
         fontWeight: "bold",
     },
@@ -116,13 +116,13 @@ const styles = StyleSheet.create({
         marginStart: 15,
         marginTop: 14,
         opacity: 1,
-        color: "black",
+        color: "white",
         fontSize: 15,
     },
     header: {
         marginTop: 20,
         opacity: 1,
-        color: "black",
+        color: "white",
         fontSize: 16,
         fontWeight: "bold",
     }

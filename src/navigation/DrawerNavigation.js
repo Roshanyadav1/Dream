@@ -4,8 +4,8 @@ import { createDrawerNavigator, DrawerItemList, DrawerContentScrollView } from '
 import BottomTabNaviagation from './BottomTabNaviagation';
 import { Text, Image, StyleSheet, SafeAreaView } from 'react-native';
 import logo1 from '../assests/images/logo1.png';
-import AboutUs from '../components/user/AboutUs';
 import MyLibrary from './../components/user/MyLibrary';
+import AboutUs from './../components/user/AboutUs';
 
 const DrawerNavigation = () => {
     const Drawer = createDrawerNavigator();
@@ -36,8 +36,10 @@ const DrawerNavigation = () => {
                     component={BottomTabNaviagation}
                     options={{ drawerLabel: 'Home' }}
                 />
-                <Drawer.Screen name="MyLibrary" component={MyLibrary} />
-                <Drawer.Screen name="About" component={AboutUs} />
+                <Drawer.Screen name="My Library" component={MyLibrary}
+                    options={{ drawerLabel: 'My Library' }} />
+                <Drawer.Screen name="About us" component={AboutUs}
+                    options={{ drawerLabel: 'About us' }} />
             </Drawer.Navigator>
         </React.Fragment>
     );
