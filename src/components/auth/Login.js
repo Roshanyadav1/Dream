@@ -101,7 +101,7 @@ const Login = ({ navigation }) => {
     }
 
     const handleSubmit = async () => {
-        // navigation.navigate('DrawerNavigation')
+        navigation.navigate('DrawerNavigation')
         if (!isValidateEmail(email)) {
             return updateError('email', setEmailError)
         }

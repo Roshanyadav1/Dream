@@ -34,8 +34,10 @@ const DrawerNavigation = () => {
                     component={BottomTabNaviagation}
                     options={{ drawerLabel: 'Home' }}
                 />
-                <Drawer.Screen name="MyLibrary" component={MyLibrary} />
-                <Drawer.Screen name="About" component={About} />
+                <Drawer.Screen name="My Library" component={MyLibrary}
+                    options={{ drawerLabel: 'My Library' }} />
+                <Drawer.Screen name="About us" component={About}
+                    options={{ drawerLabel: 'About us' }} />
             </Drawer.Navigator>
         </React.Fragment>
     );
