@@ -7,8 +7,12 @@ import {
     Image,
     TouchableOpacity,
 } from 'react-native';
+// import { useDispatch, useSelector } from 'react-redux';
 
 export default function Home({ navigation }) {
+    // const dispatch = useDispatch();
+    // const counter = useSelector((state) => state.auth)
+    // console.log(counter)
     return (
         <View style={styles.container}>
 

@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     text: {
         flex: 1,
         opacity: 1,
-        color: "black",
+        color: "darkgreen",
         fontSize: 42,
         lineHeight: 84,
         fontWeight: "bold",
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     },
     text2: {
         opacity: 1,
-        color: "black",
+        color: "darkgreen",
         fontSize: 15,
         padding: 10,
         fontWeight: "bold",

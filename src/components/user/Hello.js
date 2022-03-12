@@ -5,8 +5,6 @@ import logo1 from '../../assests/images/logo1.png';
 export default function Hello() {
     return (
         <View style={styles.container}>
-            <Image source={logo1} resizeMode="cover" style={styles.image} />
-
             <Text>Hello</Text>
         </View>
     )
